@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaAI Capital | AI Investment Advancements</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { margin:0; font-family:Arial,Helvetica,sans-serif; background:#0b0f1a; color:#e6e8ef; }
+    header { background:linear-gradient(135deg,#1f3cff,#00c6ff); padding:40px; text-align:center; }
+    header h1 { margin:0; font-size:2.6rem; }
+    nav { background:#11162a; display:flex; justify-content:center; gap:25px; padding:15px 0; position:sticky; top:0; }
+    nav a { color:#9fb4ff; text-decoration:none; font-weight:bold; }
+    nav a:hover { color:#fff; }
+    section { padding:70px 10%; }
+    h2 { color:#6ea8ff; }
+    .card-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:25px; }
+    .card { background:#161c34; border-radius:14px; padding:25px; box-shadow:0 0 20px rgba(0,0,0,0.4); }
+    footer { background:#0a0e1a; text-align:center; padding:25px; color:#7f89b8; }
+    button { background:#1f3cff; color:#fff; border:none; padding:12px 22px; border-radius:25px; font-size:1rem; cursor:pointer; }
+    button:hover { background:#00aaff; }
+    .chatbot { position:fixed; bottom:20px; right:20px; background:#1f3cff; color:white; border-radius:50%; width:60px; height:60px; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; box-shadow:0 0 20px rgba(0,0,0,0.5); }
+    .chatbox { display:none; position:fixed; bottom:90px; right:20px; width:300px; background:#161c34; border-radius:12px; overflow:hidden; }
+    .chatbox header { padding:12px; font-size:1rem; }
+    .chatbox textarea { width:100%; height:80px; border:none; padding:10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>NovaAI Capital</h1>
+  <p>Tracking & Investing in Artificial Intelligence Innovation</p>
+  <button onclick="document.getElementById('invest').scrollIntoView({behavior:'smooth'})">Explore AI Markets</button>
+</header>
+
+<nav>
+  <a href="#about">About</a>
+  <a href="#advancements">Advancements</a>
+  <a href="#invest">Investments</a>
+  <a href="#stocks">Live Stocks</a>
+  <a href="#chat">AI Assistant</a>
+  <a href="#future">Vision</a>
+</nav>
+
+<section id="about">
+  <h2>About Us</h2>
+  <p>NovaAI Capital is an AI-focused startup analyzing breakthroughs in artificial intelligence and how they translate into long-term investment opportunities. Our platform is educational, research-driven, and forward-looking.</p>
+</section>
+
+<section id="advancements">
+  <h2>AI Technology Advancements</h2>
+  <div class="card-grid">
+    <div class="card"><h3>Generative AI</h3><p>LLMs, image & video models transforming software, media, and education.</p></div>
+    <div class="card"><h3>AI Hardware</h3><p>Next-gen GPUs, chips, and cloud infrastructure accelerating AI growth.</p></div>
+    <div class="card"><h3>Autonomous Agents</h3><p>AI systems capable of decision-making, execution, and optimization.</p></div>
+  </div>
+</section>
+
+<section id="invest">
+  <h2>AI Investment Areas</h2>
+  <div class="card-grid">
+    <div class="card"><h3>Public AI Leaders</h3><p>Major companies driving AI platforms and infrastructure.</p></div>
+    <div class="card"><h3>Emerging Startups</h3><p>Early-stage innovators shaping the future of AI markets.</p></div>
+    <div class="card"><h3>AI + Finance</h3><p>Trading, forecasting, and risk analysis powered by AI models.</p></div>
+  </div>
+</section>
+
+<section id="stocks">
+  <h2>Live AI Stock Tracking (Demo Ready)</h2>
+  <p>This section is structured to connect to real-time stock APIs (NVDA, MSFT, AMD, GOOGL). For now, it shows realistic demo data.</p>
+  <canvas id="aiChart"></canvas>
+  <div class="card-grid" style="margin-top:40px;">
+    <div class="card"><h3>NVIDIA (NVDA)</h3><p>Leader in AI GPUs and data center acceleration.</p></div>
+    <div class="card"><h3>Microsoft (MSFT)</h3><p>Enterprise AI, cloud, and OpenAI integration.</p></div>
+    <div class="card"><h3>AMD</h3><p>High-performance compute competing in AI hardware.</p></div>
+  </div>
+</section>
+
+<section id="future">
+  <h2>Future Vision</h2>
+  <p>We believe AI will become the backbone of every industry. Our mission is to make AI investment knowledge accessible, transparent, and future-ready.</p>
+</section>
+
+<footer>
+  <p>© 2026 NovaAI Capital</p>
+  <p>Educational Platform | AI Research & Market Analysis</p>
+  <p style="font-size:0.8rem;">Not financial advice. Demo data shown.</p>
+</footer>
+
+<div class="chatbot" onclick="toggleChat()">AI</div>
+<div class="chatbox" id="chatbox">
+  <header>NovaAI Assistant</header>
+  <textarea placeholder="Ask about AI stocks, startups, or trends..."></textarea>
+  <button style="width:100%; border-radius:0;">Send</button>
+  <p style="font-size:0.7rem; padding:8px; color:#9fb4ff;">*AI backend connection ready*</p>
+</div>
+
+<script>
+  function toggleChat() {
+    const box = document.getElementById('chatbox');
+    box.style.display = box.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // REAL STOCK DATA (Alpha Vantage demo API)
+  const API_KEY = 'demo';
+  const symbols = ['NVDA','MSFT','AMD'];
+
+  async function fetchStock(symbol) {
+    const res = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`);
+    const data = await res.json();
+    const series = data['Time Series (Daily)'];
+    if (!series) return null;
+    const dates = Object.keys(series).slice(0, 5).reverse();
+    return dates.map(d => Number(series[d]['4. close']));
+  }
+
+  async function loadChart() {
+    const nvda = await fetchStock('NVDA');
+    const msft = await fetchStock('MSFT');
+    const amd = await fetchStock('AMD');
+
+    const ctx = document.getElementById('aiChart');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Day 1','Day 2','Day 3','Day 4','Day 5'],
+        datasets: [
+          { label:'NVDA', data:nvda, borderColor:'#76b7ff', fill:false },
+          { label:'MSFT', data:msft, borderColor:'#4cffb0', fill:false },
+          { label:'AMD', data:amd, borderColor:'#ff6b6b', fill:false }
+        ]
+      }
+    });
+  }
+
+  loadChart();
+</script>
+
+</body>
+</html>
